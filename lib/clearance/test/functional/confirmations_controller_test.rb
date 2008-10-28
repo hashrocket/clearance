@@ -6,66 +6,32 @@ module Clearance
         def self.included(base)
           base.class_eval do
 
-            context 'A GET to #new' do
-              context "with the User with the given id's salt" do
+            context 'A GET to #confirm' do
+              context "with the User's given confirmation code" do
                 setup do
                   @user = Factory :user
-                  get :new, :user_id => @user.to_param, :salt => @user.salt
-                end
-
-                should 'find the User record with the given id and salt' do
-                  assert_equal @user, assigns(:user)
-                end
-
-                should_respond_with :success
-                should_render_template :new
-              end
-
-              context "without the User with the given id's salt" do
-                setup do
-                  user = Factory :user
-                  salt = ''
-                  assert_not_equal salt, user.salt
-
-                  get :new, :user_id => user.to_param, :salt => ''
-                end
-
-                should_respond_with :not_found
-
-                should 'render nothing' do
-                  assert @response.body.blank?
-                end
-              end
-            end
-
-            context 'A POST to #create' do
-              context "with the User with the given id's salt" do
-                setup do
-                  @user = Factory :user
-                  assert ! @user.confirmed?
-
-                  post :create, :user_id => @user, :salt => @user.salt
+                  @user.generate_confirmation_code
+                  get :confirm, :confirmation_code => @user.confirmation_code
                   @user.reload
                 end
 
-                should 'confirm the User record with the given id' do
+                should 'find and confirm the User record with the given confimation code' do
                   assert @user.confirmed?
                 end
 
-                should 'log the User in' do
-                  assert_equal @user.id, session[:user_id]
+                should 'not log the User in' do
+                  assert_nil session[:user_id]
                 end
 
+                should_respond_with :redirect
                 should_redirect_to "@controller.send(:url_after_create)"
+                
               end
 
-              context "without the User with the given id's salt" do
+              context "without the User's given confirmation code" do
                 setup do
                   user = Factory :user
-                  salt = ''
-                  assert_not_equal salt, user.salt
-
-                  post :create, :user_id => user.id, :salt => salt
+                  get :confirm, :confirmation_code => ''
                 end
 
                 should_respond_with :not_found
@@ -74,6 +40,7 @@ module Clearance
                   assert @response.body.blank?
                 end
               end
+              
             end
 
           end

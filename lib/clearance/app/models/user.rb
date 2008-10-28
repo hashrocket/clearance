@@ -62,6 +62,11 @@ module Clearance
         
           def confirm!
             self.update_attribute :confirmed, true
+            update_attribute(:confirmation_code, nil)
+          end
+          
+          def generate_confirmation_code
+            update_attribute(:confirmation_code, Digest::SHA1.hexdigest(Time.now.to_s.split(//).sort_by {rand}.join))
           end
         end
     

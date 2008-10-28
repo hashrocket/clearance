@@ -186,16 +186,37 @@ module Clearance
               setup do
                 @user = Factory :user
               end
-
+              
+              context 'when sent #generate_confirmation_code' do
+                setup do
+                  assert ! @user.confirmed?
+                  assert_nil @user.confirmation_code
+                  @user.generate_confirmation_code
+                end
+                
+                should 'generate a confirmation code' do
+                  assert @user.confirmation_code
+                end
+                
+                should 'not be confirmed' do
+                  assert ! @user.confirmed?
+                end
+              end
+              
               context 'when sent #confirm!' do
                 setup do
                   assert ! @user.confirmed?
+                  @user.generate_confirmation_code
                   assert @user.confirm!
                   @user.reload
                 end
 
                 should 'mark the User record as confirmed' do
                   assert @user.confirmed?
+                end
+                
+                should 'remove the confirmation code' do
+                  assert_nil @user.confirmation_code
                 end
               end
             end

@@ -33,6 +33,7 @@ module Clearance
             context "A confirmation email" do
               setup do
                 @user = Factory :user
+                @user.generate_confirmation_code
                 @email = ClearanceMailer.create_confirmation @user
               end
 
@@ -50,7 +51,7 @@ module Clearance
 
               should "contain a link to confirm the user's account" do
                 host = ActionMailer::Base.default_url_options[:host]
-                regexp = %r{http://#{host}/users/#{@user.id}/confirmation/new\?salt=#{@user.salt}}
+                regexp = %r{http://#{host}/users/confirmations/#{@user.confirmation_code}}
                 assert_match regexp, @email.body
               end
             end
