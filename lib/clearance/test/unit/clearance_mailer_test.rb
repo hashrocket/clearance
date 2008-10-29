@@ -52,7 +52,7 @@ module Clearance
 
               should "contain a link to confirm the user's account" do
                 host = ActionMailer::Base.default_url_options[:host]
-                regexp = %r{http://#{host}/users/confirmations/#{@user.confirmation_code}}
+                regexp = %r{http://#{host}/confirmations/#{@user.confirmation_code}}
                 assert_match regexp, @email.body
               end
             end
