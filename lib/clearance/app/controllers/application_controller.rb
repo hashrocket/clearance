@@ -26,6 +26,10 @@ module Clearance
         end
 
         module ProtectedInstanceMethods
+          def login_required
+            logged_in? || deny_access('Permission denied', :redirect => new_session_path)
+          end
+          
           def authenticate
             deny_access unless logged_in?
           end
