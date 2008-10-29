@@ -6,6 +6,7 @@ module Clearance
         def self.included(base)
           base.class_eval do
             should_require_attributes :email, :password
+            should_have_instance_methods :old_password, :old_password=
 
             should "require password validation on create" do
               user = Factory.build(:user, :password => 'blah', :password_confirmation => 'boogidy')
@@ -282,6 +283,48 @@ module Clearance
                   assert @user.errors.on(:password)
                 end
               end
+
+              context 'when sent #change_password' do
+                 setup do
+                   assert_not_nil @user.crypted_password
+                 end
+
+                 should 'change the password when passed an old password and matching password and confirmation password' do
+                   old_pass = @user.crypted_password
+                   @user.change_password(:old_password => 'password', :password => 'new_password', :password_confirmation => 'new_password')
+                   assert_not_equal old_pass, @user.crypted_password
+                 end
+
+                 should 'return true if the password is changed' do
+                   assert_equal true, @user.change_password(:old_password => 'password', :password => 'new_password', :password_confirmation => 'new_password')
+                 end
+
+                 should 'return false and not be valid if the old_password does not match' do
+                   assert ! @user.change_password(:old_password => 'something_else', :password => 'new_password', :password_confirmation => 'new_password')
+                   assert @user.errors.on(:old_password)
+                 end
+
+                 should 'return false and not be valid if only the confirmation password is passed in' do
+                   assert ! @user.change_password(:old_password => 'password', :password => '', :password_confirmation => 'new_password')
+                   assert @user.errors.on(:password)
+                 end
+
+                 should 'return false and not be valid without a password to confirm' do
+                   assert ! @user.change_password(:old_password => 'password', :password_confirmation => 'new_password')
+                   assert @user.errors.on(:password)
+                 end
+
+                 should 'return false and not be valid if only the password is passed in' do
+                   assert ! @user.change_password(:old_password => 'password', :password => 'new_password')
+                   assert @user.errors.on(:password)
+                 end
+
+                 should 'return false and not be valid if the password is not confirmed' do
+                   assert ! @user.change_password(:old_password => 'password', :password => 'new_password', :password_confirmation => 'xnew_password')
+                   assert @user.errors.on(:password)
+                 end
+               end
+
             end
           end
         end

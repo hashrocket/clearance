@@ -7,7 +7,7 @@ module Clearance
           base.class_eval do
         
             attr_accessible :email, :password, :password_confirmation
-            attr_accessor :password, :password_confirmation
+            attr_accessor :password, :password_confirmation, :old_password
 
             validates_presence_of     :email
             validates_presence_of     :password, :if => :password_required?
@@ -77,6 +77,15 @@ module Clearance
           def reset_password(password_hash)
             if update_attributes(password_hash.slice(:password, :password_confirmation))
               update_attribute(:reset_password_code, nil)
+            end
+          end
+          
+          def change_password(password_hash)
+            if authenticated?(password_hash[:old_password])
+              update_attributes(password_hash.slice(:password, :password_confirmation))
+            else
+              errors.add(:old_password, "does not match")
+              return false
             end
           end
         end
