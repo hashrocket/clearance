@@ -6,7 +6,9 @@ module Clearance
         def self.included(base)
           base.class_eval do
             filter_parameter_logging :password
-        
+            
+            before_filter :login_required, :only => [:change_password, :edit_password]
+            
             include InstanceMethods
         
           private
@@ -29,6 +31,22 @@ module Clearance
               render :action => "new"
             end
           end
+          
+          def edit_password
+            @user = current_user
+          end
+          
+          def change_password
+            @user = current_user
+            
+            if @user.change_password(params[:user])
+              flash[:notice] = "Password changed successfully."
+              redirect_to url_after_change_password
+            else
+              render :action => "edit_password"
+            end
+          end
+          
         end
 
         module PrivateInstanceMethods
@@ -37,6 +55,9 @@ module Clearance
             new_session_url
           end
         
+          def url_after_change_password
+            user_path(current_user)
+          end
         end
 
       end

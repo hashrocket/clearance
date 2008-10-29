@@ -66,6 +66,135 @@ module Clearance
 
               should_filter_params :password
             end
+            
+            public_context do
+              context 'A GET to #edit_password when not logged in' do
+                setup do
+                  @user = Factory(:user)
+                  @user.confirm!
+                  get :edit_password, :id => @user.id
+                end
+                
+                should_respond_with :redirect
+
+                should_redirect_to "new_session_path"
+              end
+
+              context 'A PUT to #change_password when not logged in' do
+                setup do
+                  @user = Factory(:user)
+                  @user.confirm!
+                  @new_password = 'new_password'
+                  put(:change_password,
+                      :id  => @user.id,
+                      :user => { :old_password => 'password',
+                      :password => @new_password,
+                      :password_confirmation => @new_password })
+                end
+
+                should_respond_with :redirect
+
+                should_redirect_to "new_session_path"
+              end
+            end
+            
+            logged_in_user_context do
+              context 'A GET to #edit_password' do
+                setup do
+                  @user.confirm!
+                  get :edit_password, :id => @user.id
+                end
+
+                should 'find the user' do
+                  assert_equal @user, assigns(:user)
+                end
+
+                should_respond_with :success
+                should_render_template "edit_password"
+
+                should "have a form for the user's email, password, and password confirm" do
+                  update_path = ERB::Util.h(change_password_user_path(:id => @user))
+
+                  assert_select 'form[action=?]', update_path do
+                    assert_select 'input[name=_method][value=?]', 'put'
+                    assert_select 'input[name=?]', 'user[old_password]'
+                    assert_select 'input[name=?]', 'user[password]'
+                    assert_select 'input[name=?]', 'user[password_confirmation]'
+                  end
+                end
+              end
+
+              context 'A PUT to #change_password' do
+                setup do
+                  @user.confirm!
+                  @new_password = 'new_password'
+                  @encrypted_new_password = Digest::SHA1.hexdigest("--#{@user.salt}--#{@new_password}--")
+                  assert_not_equal @encrypted_new_password, @user.crypted_password
+                end
+
+                context 'with an existing user with a matching password and password confirmation' do
+                  setup do
+                    put(:change_password,
+                        :id  => @user.id,
+                        :user => { :old_password => 'password',
+                        :password => @new_password,
+                        :password_confirmation => @new_password })
+                    @user.reload
+                  end
+
+                  should "update the user's password" do
+                    assert_equal @encrypted_new_password, @user.crypted_password
+                  end
+
+                  should 'remove the reset_password_code' do
+                    assert_nil @user.reset_password_code
+                  end
+
+                  should_return_from_session :user_id, "@user.id"
+
+                  should_redirect_to "user_path(@user)"
+                end
+
+                context 'with a blank old_password' do
+                  setup do
+                    put(:change_password,
+                        :id => @user.id,
+                        :user => {:old_password => '',
+                        :password => @new_password,
+                        :password_confirmation => @new_password})
+                    @user.reload
+                  end
+
+                  should "not update the user's password" do
+                    assert_not_equal @encrypted_new_password, @user.crypted_password
+                  end
+
+                  should_return_from_session :user_id, "@user.id"
+
+                  should_render_template "edit_password"
+                end
+
+                context 'with password but blank password confirmation' do
+                  setup do
+                    put(:change_password,
+                        :id => @user.id,
+                        :user => {:old_password => 'password',
+                        :password => @new_password,
+                        :password_confirmation => ''})
+                    @user.reload
+                  end
+
+                  should "not update the user's password" do
+                    assert_not_equal @encrypted_new_password, @user.crypted_password
+                  end
+
+                  should_return_from_session :user_id, "@user.id"
+
+                  should_render_template "edit_password"
+                end
+              end
+            end
+            
           end
         end
       end
