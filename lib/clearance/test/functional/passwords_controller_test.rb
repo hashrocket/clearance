@@ -6,16 +6,28 @@ module Clearance
         def self.included(base)
           base.class_eval do
 
-            should_route :get, '/users/1/password/edit', :action => 'edit', :user_id => '1'
+            should_route :get, '/passwords/new', :action => 'new'
+            should_route :post, '/passwords', :action => 'create'
+            should_route :get, '/passwords/:id/edit', :action => 'edit', :id => 'reset_password_code'
+            should_route :put, '/passwords/:id', :action => 'update', :id => 'reset_password_code'
 
             context 'with a user' do
               setup { @user = Factory :user }
 
               context 'A GET to #new' do
-                setup { get :new, :user_id => @user.to_param }
+                setup { get :new }
 
                 should_respond_with :success
                 should_render_template 'new'
+                
+                should "have a form for the user's email" do
+                  new_path = ERB::Util.h(passwords_path)
+
+                  assert_select 'form[action=?]', new_path do
+                    assert_select 'input[name=?]', 'email'
+                  end
+                end
+                
               end
 
               context 'A POST to #create' do
@@ -23,12 +35,17 @@ module Clearance
                   setup do
                     ActionMailer::Base.deliveries.clear
 
-                    post :create, :password => { :email => @user.email }
+                    post :create, :email => @user.email
                     @email = ActionMailer::Base.deliveries[0]
                   end
 
                   should 'send an email to the user to edit their password' do
-                    assert @email.subject =~ /change your password/i
+                    assert @email.subject =~ /forgot your password/i
+                  end
+                  
+                  should 'generate a reset_password_code' do
+                    @user.reload
+                    assert_not_nil @user.reset_password_code
                   end
 
                   should_redirect_to "@controller.send(:url_after_create)"
@@ -40,15 +57,15 @@ module Clearance
                     assert ! User.exists?(['email = ?', email])
                     ActionMailer::Base.deliveries.clear
 
-                    post :create, :password => { :email => email }
+                    post :create, :email => email
                   end
 
                   should 'not send a password reminder email' do
                     assert ActionMailer::Base.deliveries.empty?
                   end
 
-                  should 'set a :warning flash' do
-                    assert_not_nil flash.now[:warning]
+                  should 'set a :error flash' do
+                    assert_not_nil flash.now[:error]
                   end
 
                   should_render_template "new"
@@ -56,15 +73,13 @@ module Clearance
               end
 
               context 'A GET to #edit' do
-                context "with an existing user's id and password" do
+                context "with an existing user's reset password code" do
                   setup do
-                    get :edit, 
-                      :user_id => @user.to_param, 
-                      :password => @user.crypted_password, 
-                      :email => @user.email
+                    @user.generate_reset_password_code
+                    get :edit, :id => @user.reset_password_code 
                   end
 
-                  should 'find the user with the given id and password' do
+                  should 'find the user' do
                     assert_equal @user, assigns(:user)
                   end
 
@@ -72,21 +87,19 @@ module Clearance
                   should_render_template "edit"
 
                   should "have a form for the user's email, password, and password confirm" do
-                    update_path = ERB::Util.h(user_password_path(@user,
-                          :password => @user.crypted_password,
-                          :email    => @user.email))
+                    update_path = ERB::Util.h(password_path(:id => @user.reset_password_code))
 
                     assert_select 'form[action=?]', update_path do
                       assert_select 'input[name=_method][value=?]', 'put'
-                      assert_select 'input[name=?]', 'user[password]'
-                      assert_select 'input[name=?]', 'user[password_confirmation]'
+                      assert_select 'input[name=?]', 'password'
+                      assert_select 'input[name=?]', 'password_confirmation'
                     end
                   end
                 end
 
-                context "with an existing user's id but not password" do
+                context "without an existing user's reset password code" do
                   setup do
-                    get :edit, :user_id => @user.to_param, :password => ''
+                    get :edit, :id => 'some_random_x'
                   end
 
                   should_respond_with :not_found
@@ -98,19 +111,34 @@ module Clearance
               end
 
               context 'A PUT to #update' do
-                context "with an existing user's id but not password" do
+                setup do
+                  @new_password = 'new_password'
+                  @encrypted_new_password = Digest::SHA1.hexdigest("--#{@user.salt}--#{@new_password}--")
+                  assert_not_equal @encrypted_new_password, @user.crypted_password
+                  @user.generate_reset_password_code
+                end
+                
+                context "without an existing user's reset_password_code" do
                   setup do
-                    put :update, :user_id => @user.to_param, :password => ''
+                    put(:update,
+                        :id => 'x',
+                        :password => @new_password,
+                        :password_confirmation => @new_password)
+                    @user.reload
                   end
 
-                  should "not update the user's password" do
-                    assert_not_equal @encrypted_new_password, @user.crypted_password
+                  should "not find the user" do
+                    assert_nil assigns[:user]
                   end
 
                   should 'not log the user in' do
                     assert_nil session[:user_id]
                   end
 
+                  should 'not remove the reset_password_code' do
+                    assert_not_nil @user.reset_password_code
+                  end
+                  
                   should_respond_with :not_found
 
                   should 'render an empty response' do
@@ -118,26 +146,21 @@ module Clearance
                   end
                 end
 
-                context 'with a matching password and password confirmation' do
+                context 'with an existing user with a matching password and password confirmation' do
                   setup do
-                    new_password = 'new_password'
-                    encryption_format = "--#{@user.salt}--#{new_password}--"
-                    @encrypted_new_password = Digest::SHA1.hexdigest encryption_format
-                    assert_not_equal @encrypted_new_password, @user.crypted_password
-
                     put(:update,
-                        :user_id  => @user,
-                        :email    => @user.email,
-                        :password => @user.crypted_password,
-                        :user => {
-                          :password              => new_password,
-                          :password_confirmation => new_password
-                        })
+                        :id  => @user.reset_password_code,
+                        :password              => @new_password,
+                        :password_confirmation => @new_password)
                     @user.reload
                   end
 
                   should "update the user's password" do
                     assert_equal @encrypted_new_password, @user.crypted_password
+                  end
+
+                  should 'remove the reset_password_code' do
+                    assert_nil @user.reset_password_code
                   end
 
                   should 'log the user in' do
@@ -147,19 +170,12 @@ module Clearance
                   should_redirect_to "user_path(@user)"
                 end
 
-                context 'with password but blank password confirmation' do
+                context 'with blank password and a password confirmation' do
                   setup do
-                    new_password = 'new_password'
-                    encryption_format = "--#{@user.salt}--#{new_password}--"
-                    @encrypted_new_password = Digest::SHA1.hexdigest encryption_format
-
                     put(:update,
-                        :user_id => @user.to_param,
-                        :password => @user.crypted_password,
-                        :user => {
-                          :password => new_password,
-                          :password_confirmation => ''
-                        })
+                        :id => @user.reset_password_code,
+                        :password => '',
+                        :password_confirmation => @new_password)
                     @user.reload
                   end
 
@@ -171,11 +187,39 @@ module Clearance
                     assert_nil session[:user_id]
                   end
 
-                  should_respond_with :not_found
-
-                  should 'render an empty response' do
-                    assert @response.body.blank?
+                  should 'set a :error flash' do
+                    assert_not_nil flash.now[:error]
                   end
+
+                  should_render_template "edit"
+                end
+
+                context 'with password but blank password confirmation' do
+                  setup do
+                    put(:update,
+                        :id => @user.reset_password_code,
+                        :password => @new_password,
+                        :password_confirmation => '')
+                    @user.reload
+                  end
+
+                  should "not update the user's password" do
+                    assert_not_equal @encrypted_new_password, @user.crypted_password
+                  end
+
+                  should 'not log the user in' do
+                    assert_nil session[:user_id]
+                  end
+
+                  should 'not remove the reset_password_code' do
+                    assert_not_nil @user.reset_password_code
+                  end
+
+                  should 'set a :error flash' do
+                    assert_not_nil flash.now[:error]
+                  end
+
+                  should_render_template "edit"
                 end
               end
             end

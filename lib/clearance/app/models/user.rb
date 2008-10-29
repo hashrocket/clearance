@@ -15,6 +15,7 @@ module Clearance
             validates_uniqueness_of   :email
 
             before_save :initialize_salt, :encrypt_password
+            after_create :generate_confirmation_code
         
             extend ClassMethods
             include InstanceMethods
@@ -68,6 +69,16 @@ module Clearance
           def generate_confirmation_code
             update_attribute(:confirmation_code, Digest::SHA1.hexdigest(Time.now.to_s.split(//).sort_by {rand}.join))
           end
+          
+          def generate_reset_password_code
+            update_attribute(:reset_password_code, Digest::SHA1.hexdigest(Time.now.to_s.split(//).sort_by {rand}.join))
+          end
+          
+          def reset_password(password_hash)
+            if update_attributes(password_hash.slice(:password, :password_confirmation))
+              update_attribute(:reset_password_code, nil)
+            end
+          end
         end
     
         module ProtectedInstanceMethods
@@ -81,7 +92,7 @@ module Clearance
           end
 
           def password_required?
-            crypted_password.blank? || !password.blank?
+            crypted_password.blank? || !password.blank? || !password_confirmation.blank?
           end
         end
   

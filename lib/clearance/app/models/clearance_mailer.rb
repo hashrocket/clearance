@@ -15,7 +15,7 @@ module Clearance
           def change_password(user)
             from       DO_NOT_REPLY
             recipients user.email
-            subject    "[#{PROJECT_NAME.humanize}] Change your password"
+            subject    "[#{PROJECT_NAME.humanize}] Forgot your password"
             body       :user => user
           end
         

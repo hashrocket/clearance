@@ -8,6 +8,7 @@ module Clearance
             context "A change password email" do
               setup do
                 @user = Factory :user
+                @user.generate_reset_password_code
                 @email = ClearanceMailer.create_change_password @user
               end
 
@@ -17,7 +18,7 @@ module Clearance
 
               should "contain a link to edit the user's password" do
                 host = ActionMailer::Base.default_url_options[:host]
-                regexp = %r{http://#{host}/users/#{@user.id}/password/edit\?email=#{@user.email.gsub("@", "%40")}&amp;password=#{@user.crypted_password}}
+                regexp = %r{http://#{host}/passwords/#{@user.reset_password_code}}
                 assert_match regexp, @email.body
               end
 
@@ -25,8 +26,8 @@ module Clearance
                 assert_equal [@user.email], @email.to
               end
 
-              should "have a subject of '[PROJECT_NAME] Change your password'" do
-                assert_equal @email.subject, "[#{PROJECT_NAME.humanize}] Change your password"
+              should "have a subject of '[PROJECT_NAME] Forgot your password'" do
+                assert_equal @email.subject, "[#{PROJECT_NAME.humanize}] Forgot your password"
               end
             end
             

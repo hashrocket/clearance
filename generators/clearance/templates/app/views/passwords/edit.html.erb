@@ -3,21 +3,16 @@
 </p>
 
 <%= error_messages_for :user %>
-<% form_for(:user,
-            :url => user_password_path(
-              @user,
-              :email => @user.email,
-              :password => @user.crypted_password),
-            :html => { :method => :put }) do |form| %>
+<% form_tag(password_path(:id => @user.reset_password_code), :method => :put) do %>
   <div class="password_field">
-    <%= form.label :password, 'Choose password' %>
-    <%= form.password_field :password %>
+    <%= label_tag :password, 'Choose password' %>
+    <%= password_field_tag :password %>
   </div>
   <div class="password_field">
-    <%= form.label :password_confirmation, 'Verify password' %>
-    <%= form.password_field :password_confirmation %>
+    <%= label_tag :password_confirmation, 'Verify password' %>
+    <%= password_field_tag :password_confirmation %>
   </div>
   <div class="submit_field">
-    <%= form.submit 'Save this password' %>
+    <%= submit_tag 'Save this password' %>
   </div>
 <% end %>

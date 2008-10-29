@@ -5,8 +5,6 @@ module Clearance
 
         def self.included(base)
           base.class_eval do
-            before_filter :redirect_to_root, :only => [:new, :create], :if => :logged_in?
-        
             filter_parameter_logging :password
         
             include InstanceMethods

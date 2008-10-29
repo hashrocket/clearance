@@ -33,8 +33,9 @@ module Clearance
 
               context "on POST to /users" do
                 setup do
+                  @email = Factory.next(:email)
                   post :create, :user => {
-                    :email => Factory.next(:email),
+                    :email => @email,
                     :password => 'skerit',
                     :password_confirmation => 'skerit'
                   }
@@ -44,6 +45,10 @@ module Clearance
                 should_redirect_to "@controller.send(:url_after_create)"
                 should_assign_to :user
                 should_change 'User.count', :by => 1
+                
+                should 'have a confirmation code' do
+                  assert_not_nil User.find_by_email(@email).confirmation_code
+                end
               end
 
             end
@@ -51,12 +56,12 @@ module Clearance
             logged_in_user_context do
               context "GET to new" do
                 setup { get :new }
-                should_redirect_to 'root_url'
+                should_render_template 'new'
               end
 
               context "POST to create" do
                 setup { post :create, :user => {} }
-                should_redirect_to 'root_url'
+                should_render_template 'new'
               end
 
               should_filter_params :password

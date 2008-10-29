@@ -16,6 +16,10 @@ module Clearance
             should "create a crypted_password on save" do
               assert_not_nil Factory(:user, :crypted_password => nil).crypted_password
             end
+            
+            should "generate a confirmation_code after create" do
+              assert_not_nil Factory(:user, :password => 'boogidy', :password_confirmation => 'boogidy').confirmation_code
+            end
 
             context 'updating a password' do
               setup do
@@ -189,6 +193,7 @@ module Clearance
               
               context 'when sent #generate_confirmation_code' do
                 setup do
+                  @user = Factory.build(:user)
                   assert ! @user.confirmed?
                   assert_nil @user.confirmation_code
                   @user.generate_confirmation_code
@@ -217,6 +222,64 @@ module Clearance
                 
                 should 'remove the confirmation code' do
                   assert_nil @user.confirmation_code
+                end
+              end
+
+              context 'when sent #generate_reset_password_code' do
+                setup do
+                  assert_nil @user.reset_password_code
+                  @user.generate_reset_password_code
+                end
+                
+                should 'generate a reset password code' do
+                  assert @user.reset_password_code
+                end
+              end
+              
+              context 'when sent #reset_password' do
+                setup do
+                  assert_not_nil @user.crypted_password
+                  assert_nil @user.reset_password_code
+                  @user.generate_reset_password_code
+                end
+                
+                should 'change the password when passed a matching password and confirmation password' do
+                  old_pass = @user.crypted_password
+                  @user.reset_password(:password => 'new_password', :password_confirmation => 'new_password')
+                  assert_not_equal old_pass, @user.crypted_password
+                end
+                
+                should 'return true if the password is changed' do
+                  assert_equal true, @user.reset_password(:password => 'new_password', :password_confirmation => 'new_password')
+                end
+
+                should 'clear the reset_password_code after changing the password' do
+                  @user.reset_password(:password => 'new_password', :password_confirmation => 'new_password')
+                  assert_nil @user.reset_password_code
+                end
+                
+                should 'return nil if the password is not confirmed' do
+                  assert_nil @user.reset_password(:password => 'new_password', :password_confirmation => 'xnew_password')
+                end
+                
+                should 'not validate if only the confirmation password is passed in' do
+                  @user.reset_password(:password => '', :password_confirmation => 'new_password')
+                  assert @user.errors.on(:password)
+                end
+
+                should 'not validate without a password to confirm' do
+                  @user.reset_password(:password_confirmation => 'new_password')
+                  assert @user.errors.on(:password)
+                end
+
+                should 'not validate if only the password is passed in' do
+                  @user.reset_password(:password => 'new_password')
+                  assert @user.errors.on(:password)
+                end
+
+                should 'not validate if the password is not confirmed' do
+                  @user.reset_password(:password => 'new_password', :password_confirmation => 'xnew_password')
+                  assert @user.errors.on(:password)
                 end
               end
             end
