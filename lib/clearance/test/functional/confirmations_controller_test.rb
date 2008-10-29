@@ -19,9 +19,7 @@ module Clearance
                   assert @user.confirmed?
                 end
 
-                should 'not log the User in' do
-                  assert_nil session[:user_id]
-                end
+                should_return_from_session :user_id, "nil"
 
                 should_respond_with :redirect
                 should_redirect_to "@controller.send(:url_after_create)"

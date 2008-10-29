@@ -131,9 +131,7 @@ module Clearance
                     assert_nil assigns[:user]
                   end
 
-                  should 'not log the user in' do
-                    assert_nil session[:user_id]
-                  end
+                  should_return_from_session :user_id, "nil"
 
                   should 'not remove the reset_password_code' do
                     assert_not_nil @user.reset_password_code
@@ -163,9 +161,7 @@ module Clearance
                     assert_nil @user.reset_password_code
                   end
 
-                  should 'log the user in' do
-                    assert_equal session[:user_id], @user.id
-                  end
+                  should_return_from_session :user_id, "@user.id"
 
                   should_redirect_to "user_path(@user)"
                 end
@@ -183,9 +179,7 @@ module Clearance
                     assert_not_equal @encrypted_new_password, @user.crypted_password
                   end
 
-                  should 'not log the user in' do
-                    assert_nil session[:user_id]
-                  end
+                  should_return_from_session :user_id, "nil"
 
                   should 'set a :error flash' do
                     assert_not_nil flash.now[:error]
@@ -207,9 +201,7 @@ module Clearance
                     assert_not_equal @encrypted_new_password, @user.crypted_password
                   end
 
-                  should 'not log the user in' do
-                    assert_nil session[:user_id]
-                  end
+                  should_return_from_session :user_id, "nil"
 
                   should 'not remove the reset_password_code' do
                     assert_not_nil @user.reset_password_code
