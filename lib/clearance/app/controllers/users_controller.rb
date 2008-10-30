@@ -5,7 +5,7 @@ module Clearance
 
         def self.included(base)
           base.class_eval do
-            filter_parameter_logging :password
+            filter_parameter_logging :password, :password_confirmation, :old_password
             
             before_filter :login_required, :only => [:change_password, :edit_password]
             
