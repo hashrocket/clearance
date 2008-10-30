@@ -12,7 +12,7 @@ module Clearance
         end
     
         module InstanceMethods
-          def change_password(user)
+          def forgot_password(user)
             from       DO_NOT_REPLY
             recipients user.email
             subject    "[#{PROJECT_NAME.humanize}] Forgot your password"

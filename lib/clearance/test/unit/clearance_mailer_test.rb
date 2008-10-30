@@ -5,11 +5,11 @@ module Clearance
   
         def self.included(base)
           base.class_eval do
-            context "A change password email" do
+            context "A forgot password email" do
               setup do
                 @user = Factory :user
                 @user.generate_reset_password_code
-                @email = ClearanceMailer.create_change_password @user
+                @email = ClearanceMailer.create_forgot_password @user
               end
 
               should "set its from address to DO_NOT_REPLY" do

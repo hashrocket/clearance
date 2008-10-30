@@ -23,7 +23,7 @@ module Clearance
               render :action => :new
             else
               user.generate_reset_password_code
-              ClearanceMailer.deliver_change_password user
+              ClearanceMailer.deliver_forgot_password user
               redirect_to url_after_create
             end
           end

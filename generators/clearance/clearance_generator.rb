@@ -34,7 +34,7 @@ class ClearanceGenerator < Rails::Generator::Base
       end
       
       m.directory File.join("app", "views", "user_mailer")
-      ["app/views/clearance_mailer/change_password.html.erb",
+      ["app/views/clearance_mailer/forgot_password.html.erb",
        "app/views/clearance_mailer/confirmation.html.erb"].each do |file|
         m.file file, file
       end
