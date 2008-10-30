@@ -11,7 +11,8 @@ class CreateUsers < ActiveRecord::Migration
       t.string :reset_password_code
     end
 
-    add_index :users, [:email, :crypted_password]    
+    add_index :users, :email
+    add_index :users, :remember_token
   end
 
   def self.down
