@@ -41,7 +41,6 @@ class ClearanceGenerator < Rails::Generator::Base
       
       m.directory File.join("app", "views", "users")
       ["app/views/users/_form.html.erb",
-       "app/views/users/edit.html.erb",
        "app/views/users/new.html.erb",
        "app/views/users/_password_form.html.erb",
        "app/views/users/edit_password.html.erb"].each do |file|
