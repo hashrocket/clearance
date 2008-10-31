@@ -19,6 +19,7 @@ module Clearance
               render(:nothing => true, :status => :not_found) and return
             end
             user.confirm!
+            login(user)
             redirect_to url_after_create
           end
         end
