@@ -22,7 +22,7 @@ module Clearance
                 should_return_from_session :user_id, "@user.id"
 
                 should_respond_with :redirect
-                should_redirect_to "@controller.send(:url_after_create)"
+                should_redirect_to "@controller.send(:url_after_confirm)"
                 
               end
 

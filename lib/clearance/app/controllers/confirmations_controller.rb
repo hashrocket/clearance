@@ -20,12 +20,12 @@ module Clearance
             end
             user.confirm!
             login(user)
-            redirect_to url_after_create
+            redirect_to url_after_confirm
           end
         end
     
         module PrivateInstanceMethods
-          def url_after_create
+          def url_after_confirm
             root_url
           end
         end
