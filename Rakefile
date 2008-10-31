@@ -1,6 +1,7 @@
 require 'rake'
 require 'rake/testtask'
 require 'date'
+require 'rake/gempackagetask'
 
 test_files_pattern = 'test/rails_root/test/{unit,functional,other}/**/*_test.rb'
 namespace :test do
@@ -15,13 +16,19 @@ desc "Run the test suite"
 task :default => 'test:all'
 
 spec = Gem::Specification.new do |s|
-  s.name = "clearance"
-  s.summary = "Simple, complete Rails authentication."
-  s.email = "dcroak@thoughtbot.com"
-  s.homepage = "http://github.com/thoughtbot/clearance"
-  s.description = "Simple, complete Rails authentication scheme."
-  s.authors = ["thoughtbot, inc.", "Josh Nichols", "Mike Breen"]
+  s.name = "npr-clearance"
+  s.summary = "Fork of clearance, not-purely-restful"
+  s.email = "les@hashrocket.com"
+  s.version = '0.1'
+  s.homepage = "http://github.com/leshill/clearance"
+  s.description = "Fork of clearance, not-purely-restful"
+  s.authors = ["thoughtbot, inc.", "Dan Croak", "Josh Nichols", "Jason Morrison", "Mike Burns", "Mike Breen", "Les Hill"]
   s.files = FileList["[A-Z]*", "{generators,lib,test}/**/*"]
+end
+
+Rake::GemPackageTask.new(spec) do |pkg|
+  pkg.need_zip = true
+  pkg.need_tar = true
 end
 
 namespace :generator do
