@@ -117,7 +117,7 @@ module Clearance
 
                   assert_select 'form[action=?]', update_path do
                     assert_select 'input[name=_method][value=?]', 'put'
-                    assert_select 'input[name=?]', 'user[old_password]'
+                    assert_select 'input[name=?][type=password]', 'user[old_password]'
                     assert_select 'input[name=?]', 'user[password]'
                     assert_select 'input[name=?]', 'user[password_confirmation]'
                   end

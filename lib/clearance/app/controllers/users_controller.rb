@@ -41,7 +41,7 @@ module Clearance
             
             if @user.change_password(params[:user])
               flash[:notice] = "Password changed successfully."
-              redirect_to url_after_change_password
+              after_successful_change_password
             else
               render :action => "edit_password"
             end
@@ -51,6 +51,10 @@ module Clearance
 
         module PrivateInstanceMethods
 
+          def after_successful_change_password
+            redirect_to user_path(current_user)
+          end
+          
           def url_after_create
             new_session_url
           end
