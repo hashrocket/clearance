@@ -2,20 +2,27 @@ module Clearance
   module App
     module Models
       module User
-    
         def self.included(base)
           base.class_eval do
-        
-            attr_accessible :email, :password, :password_confirmation
-            attr_accessor :password, :password_confirmation, :old_password
+            attr_accessor \
+              :password,
+              :password_confirmation,
+              :old_password
 
-            validates_presence_of     :email
+            attr_accessible \
+              :email,
+              :password,
+              :password_confirmation
+
+            validates_presence_of   :email, :unless => :facebook_user?
+            validates_uniqueness_of :email, :unless => :facebook_user?
+
             validates_presence_of     :password, :if => :password_required?
             validates_confirmation_of :password, :if => :password_required?
-            validates_uniqueness_of   :email
 
-            before_save :initialize_salt, :encrypt_password
-            after_create :generate_confirmation_code
+            before_save  :initialize_salt,            :unless => :facebook_user?
+            before_save  :encrypt_password,           :unless => :facebook_user?
+            after_create :generate_confirmation_code, :unless => :facebook_user?
         
             extend ClassMethods
             include InstanceMethods
@@ -88,6 +95,14 @@ module Clearance
               return false
             end
           end
+          
+          def facebook_user?
+            not normal_user?
+          end
+
+          def normal_user?
+            self.respond_to?(:facebook_id) ? facebook_id.nil? : true
+          end
         end
     
         module ProtectedInstanceMethods
@@ -101,10 +116,9 @@ module Clearance
           end
 
           def password_required?
-            crypted_password.blank? || !password.blank? || !password_confirmation.blank?
+            normal_user? && (crypted_password.blank? || !password.blank? || !password_confirmation.blank?)
           end
         end
-  
       end
     end
   end

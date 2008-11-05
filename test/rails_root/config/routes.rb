@@ -5,7 +5,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.confirmations '/confirmations/:confirmation_code', :controller => 'confirmations', :action => 'confirm', :conditions => {:method => :get}
 
-  map.resource :session
+  map.resource :session, :member => { :facebook_new => :get, :facebook_create => :get }
 
   map.root :controller => 'users', :action => 'new'
 

@@ -1,6 +1,7 @@
 (highest priority first)
 
-# activation code (like restful-auth) instead of salt?
+# parameterize Facebook includes in generators
+# split out PROJECT_NAME and SITE_NAME appropriately, don't want display issues affecting code issues
 # remove dependency on root_url?
 # should_have_form should be pulled into shoulda
 # generator should print out instructions to include modules existing files

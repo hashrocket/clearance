@@ -20,5 +20,4 @@ config.action_controller.allow_forgery_protection    = false
 # The :test delivery method accumulates sent emails in the
 # ActionMailer::Base.deliveries array.
 config.action_mailer.delivery_method = :test
-
-HOST = "localhost"
+config.action_mailer.default_url_options = {:host => "test.host"}

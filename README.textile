@@ -125,6 +125,15 @@ In config/environment.rb:
     DO_NOT_REPLY = "donotreply@example.com"
     PROJECT_NAME = "my_app_name"
 
+h2. Dependencies
+
+In order to use the Facebook sign-in features, you need to install the Facebooker plugin.
+
+    ./script/plugin install git://github.com/mmangino/facebooker.git
+
+TODO:  talk about disabliing Facebook features by removing includes
+
+
 h2. Authors
 
 * thoughtbot, inc.
@@ -133,3 +142,7 @@ h2. Authors
 * Mike Burns
 * Josh Nichols
 * Mike Breen
+* Hashrocket, Inc.
+* Les Hill
+* Jon "Lark" Larkowski
+* Wes Gibbs

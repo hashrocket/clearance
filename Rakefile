@@ -2,6 +2,7 @@ require 'rake'
 require 'rake/testtask'
 require 'date'
 require 'rake/gempackagetask'
+require 'spec/rake/spectask'
 
 test_files_pattern = 'test/rails_root/test/{unit,functional,other}/**/*_test.rb'
 namespace :test do
@@ -10,19 +11,36 @@ namespace :test do
     t.pattern = test_files_pattern
     t.verbose = false
   end
+
+  desc "Run all specs in spec directory (excluding plugin specs)"
+  Spec::Rake::SpecTask.new(:spec) do |t|
+    t.spec_opts = ['--options', "\"test/rails_root/spec/spec.opts\""]
+    t.spec_files = FileList['test/rails_root/spec/**/*_spec.rb']
+  end
 end
 
 desc "Run the test suite"
-task :default => 'test:all'
+task :default => ['test:all', 'test:spec']
 
 spec = Gem::Specification.new do |s|
-  s.name = "npr-clearance"
-  s.summary = "Fork of clearance, not-purely-restful"
-  s.email = "les@hashrocket.com"
-  s.version = '0.1'
-  s.homepage = "http://github.com/leshill/clearance"
-  s.description = "Fork of clearance, not-purely-restful"
-  s.authors = ["thoughtbot, inc.", "Dan Croak", "Josh Nichols", "Jason Morrison", "Mike Burns", "Mike Breen", "Les Hill"]
+  s.name = "clearance"
+  s.summary = "Fork of clearance, not-purely-restful, but with Facebook goodness"
+  s.email = "info@hashrocket.com"
+  s.version = '0.4.0'
+  s.homepage = "http://github.com/hashrocket/clearance"
+  s.description = "Fork of clearance, not-purely-restful, but with Facebook goodness"
+  s.authors = [
+    "thoughtbot, inc.",
+    "Dan Croak",
+    "Josh Nichols",
+    "Jason Morrison",
+    "Mike Burns",
+    "Mike Breen",
+    "Hashrocket, Inc.",
+    "Les Hill",
+    "Jon Larkowski",
+    "Wes Gibbs"
+  ]
   s.files = FileList["[A-Z]*", "{generators,lib,test}/**/*"]
 end
 

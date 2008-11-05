@@ -16,5 +16,4 @@ config.action_view.debug_rjs                         = true
 
 # Don't care if the mailer can't send
 config.action_mailer.raise_delivery_errors = false
-
-HOST = "localhost"
+config.action_mailer.default_url_options = {:host => "localhost:3000"}

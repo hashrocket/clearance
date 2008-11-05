@@ -10,7 +10,7 @@ Rails::Initializer.run do |config|
     :session_key => "_#{PROJECT_NAME}_session",
     :secret      => [PROJECT_NAME, 'random', 'words', 'here'].map {|k| Digest::MD5.hexdigest(k) }.join
   }
+
+  config.gem "haml"
   config.gem 'thoughtbot-shoulda', :lib => 'shoulda', :source => 'http://gems.github.com'
 end
-
-DO_NOT_REPLY = "donotreply@example.com"
