@@ -50,6 +50,13 @@ class ClearanceGenerator < Rails::Generator::Base
         m.file file, file
       end
       
+      m.directory 'config/initializers'
+      [
+        "config/initializers/action_mailer.rb"
+      ].each do |file|
+        m.file file, file
+      end
+      
       m.directory File.join("test", "functional")
       ["test/functional/confirmations_controller_test.rb",
        "test/functional/passwords_controller_test.rb",
