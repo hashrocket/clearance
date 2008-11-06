@@ -10,7 +10,7 @@ module Clearance
     
         module InstanceMethods
           def facebook_welcome(user)
-            subject "[#{SITE_NAME}]  Welcome!"
+            subject "[#{PROJECT_NAME.humanize}]  Welcome!"
             body :user => user
           end
         end

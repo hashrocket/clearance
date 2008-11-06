@@ -1,4 +1,6 @@
 PROJECT_NAME = "clearance"
+DO_NOT_REPLY = "donotreply@example.com" 
+
 RAILS_GEM_VERSION = '2.1.1' unless defined? RAILS_GEM_VERSION
 require File.join(File.dirname(__FILE__), 'boot')
 require 'md5' # Need this up here to generate the session[:secret] value down there
@@ -14,3 +16,4 @@ Rails::Initializer.run do |config|
   config.gem "haml"
   config.gem 'thoughtbot-shoulda', :lib => 'shoulda', :source => 'http://gems.github.com'
 end
+
