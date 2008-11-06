@@ -15,8 +15,6 @@ module Clearance
         end
         
         module InstanceMethods
-          # @@_facebook_to_user_field_mappings = {}
-          
           def facebook_new
             # handle the case where ensure_authenticated_to_facebook filter passes through,
             # like when the user has already authenticated and we have the facebook cookies

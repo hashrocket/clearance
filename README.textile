@@ -87,22 +87,38 @@ In app/controllers/application_controller.rb:
       include Clearance::App::Controllers::ApplicationController
     end
 
+In app/controllers/sessions_controller.rb:
+
+    class SessionsController < ApplicationController
+  
+      include Clearance::App::Controllers::SessionsController  
+      include Clearance::App::Controllers::FacebookSessionsController
+
+      facebook_to_user_field_mappings \
+        :first_name => :first_name,
+        :last_name => :last_name
+    end
+
 h2. Migration
 
 Your users table needs a few columns.
 
     create_table(:users) do |t|
-      t.string :email
-      t.string :crypted_password, :limit => 40
-      t.string :salt, :limit => 40
-      t.string :remember_token
-      t.datetime :remember_token_expires_at
-      t.boolean :confirmed, :default => false, :null => false
+    t.string :facebook_id
+    t.string :first_name
+    t.string :last_name
+    t.string :email
+    t.string :crypted_password, :limit => 40
+    t.string :salt, :limit => 40
+    t.string :remember_token
+    t.datetime :remember_token_expires_at
+    t.boolean :confirmed, :default => false, :null => false
+    t.string :confirmation_code
+    t.string :reset_password_code
     end
 
-    add_index :users, [:email, :crypted_password]
-    add_index :users, [:id, :salt]
     add_index :users, :email
+    add_index :users, :facebook_id
     add_index :users, :remember_token
 
 h2. Routes
@@ -114,6 +130,10 @@ h2. Routes
     map.resources :passwords
     map.root :controller => 'sessions', :action => 'new'
 
+    If you want facebook integration
+
+    map.resource  :session, :member => { :facebook_new => :get, :facebook_create => :get }
+    
 h2. Environments
 
 In config/environments/test.rb and config/environments/development.rb:

@@ -15,6 +15,7 @@ class CreateUsers < ActiveRecord::Migration
     end
 
     add_index :users, :email
+    add_index :users, :facebook_id
     add_index :users, :remember_token
   end
 
