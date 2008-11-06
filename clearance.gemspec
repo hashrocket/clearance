@@ -1,5 +1,5 @@
 Gem::Specification.new do |s|
-  s.date = "2008-11-05"
+  s.date = "2008-11-06"
   s.name = "clearance"
   s.summary = "Fork of clearance, not-purely-restful, but with Facebook goodness"
   s.email = "info@hashrocket.com"
@@ -53,6 +53,9 @@ Gem::Specification.new do |s|
     "generators/clearance/templates/app/views/users/_password_form.html.erb",
     "generators/clearance/templates/app/views/users/edit_password.html.erb",
     "generators/clearance/templates/app/views/users/new.html.erb",
+    "generators/clearance/templates/config",
+    "generators/clearance/templates/config/initializers",
+    "generators/clearance/templates/config/initializers/action_mailer.rb",
     "generators/clearance/templates/test",
     "generators/clearance/templates/test/factories.rb",
     "generators/clearance/templates/test/functional",
@@ -139,6 +142,7 @@ Gem::Specification.new do |s|
     "test/rails_root/config/environments/test.rb",
     "test/rails_root/config/facebooker.yml",
     "test/rails_root/config/initializers",
+    "test/rails_root/config/initializers/action_mailer.rb",
     "test/rails_root/config/initializers/clearance.rb",
     "test/rails_root/config/initializers/constants.rb",
     "test/rails_root/config/initializers/inflections.rb",
@@ -148,10 +152,8 @@ Gem::Specification.new do |s|
     "test/rails_root/config/routes.rb",
     "test/rails_root/db",
     "test/rails_root/db/bootstrap",
-    "test/rails_root/db/foo.sqlite3",
     "test/rails_root/db/migrate",
     "test/rails_root/db/migrate/001_create_users.rb",
-    "test/rails_root/db/schema.rb",
     "test/rails_root/doc",
     "test/rails_root/doc/README_FOR_APP",
     "test/rails_root/doc/README_FOR_TEMPLATE",
@@ -570,6 +572,9 @@ Gem::Specification.new do |s|
     "test/rails_root/vendor/plugins/clearance/generators/clearance/templates/app/views/users/_password_form.html.erb",
     "test/rails_root/vendor/plugins/clearance/generators/clearance/templates/app/views/users/edit_password.html.erb",
     "test/rails_root/vendor/plugins/clearance/generators/clearance/templates/app/views/users/new.html.erb",
+    "test/rails_root/vendor/plugins/clearance/generators/clearance/templates/config",
+    "test/rails_root/vendor/plugins/clearance/generators/clearance/templates/config/initializers",
+    "test/rails_root/vendor/plugins/clearance/generators/clearance/templates/config/initializers/action_mailer.rb",
     "test/rails_root/vendor/plugins/clearance/generators/clearance/templates/test",
     "test/rails_root/vendor/plugins/clearance/generators/clearance/templates/test/factories.rb",
     "test/rails_root/vendor/plugins/clearance/generators/clearance/templates/test/functional",
@@ -723,6 +728,5 @@ Gem::Specification.new do |s|
     "test/rails_root/vendor/plugins/facebooker/test/session_test.rb",
     "test/rails_root/vendor/plugins/facebooker/test/test_helper.rb",
     "test/rails_root/vendor/plugins/facebooker/test/user_test.rb",
-    "test/rails_root/vendor/plugins/facebooker/TODO.txt",
-  ]
+    "test/rails_root/vendor/plugins/facebooker/TODO.txt"  ]
 end

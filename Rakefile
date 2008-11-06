@@ -71,17 +71,12 @@ end
 desc "Generate the Clearance gemspec"
 task :gemspec do
   
-  files_list = "  s.files = [\n"
-  
-  files_list = gem_files.inject(files_list) do |acc, f|
-    acc << %Q{    "#{f}",\n}
-  end
-  files_list << "  ]\n"
-  
   File.open("clearance.gemspec", "w") do |file|
     file.write "Gem::Specification.new do |s|\n"
     file.write(gemspec_doc)
-    file.write files_list
+    file.write  "  s.files = [\n"
+    file.write gem_files.map {|f| %Q{    "#{f}"}}.join(",\n")
+    file.write "  ]\n"
     file.write "end\n"
   end
 end
