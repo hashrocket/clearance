@@ -1,5 +1,7 @@
 (highest priority first)
 
+# split PROJECT_NAME out into separate code and presentation constants
+# haml-ize
 # parameterize Facebook includes in generators
 # split out PROJECT_NAME and SITE_NAME appropriately, don't want display issues affecting code issues
 # remove dependency on root_url?
