@@ -22,14 +22,8 @@ module Clearance
           end
       
           def create
-            @user = user_model.new params[:user]
-            if @user.save
-              ClearanceMailer.deliver_confirmation @user
-              flash[:notice] = "You will receive an email within the next few minutes. It contains instructions for you to confirm your account."
-              redirect_to url_after_create
-            else
-              render :action => "new"
-            end
+            @user = user_model.create params[:user]
+            @user.save ? create_successful : create_failed
           end
           
           def edit_password
@@ -50,6 +44,16 @@ module Clearance
         end
 
         module PrivateInstanceMethods
+          
+          def create_successful
+            ClearanceMailer.deliver_confirmation @user
+            flash[:notice] = "You will receive an email within the next few minutes. It contains instructions for you to confirm your account."
+            redirect_to url_after_create
+          end
+          
+          def create_failed
+            render :action => "new"
+          end
 
           def after_successful_change_password
             redirect_to user_path(current_user)
