@@ -3,10 +3,13 @@ class ClearanceGenerator < Rails::Generator::Base
   def manifest
     record do |m|
       m.directory File.join("app", "controllers")
-      ["app/controllers/confirmations_controller.rb",
-       "app/controllers/passwords_controller.rb", 
-       "app/controllers/sessions_controller.rb", 
-       "app/controllers/users_controller.rb"].each do |file|
+      [
+        "app/controllers/application.rb",
+        "app/controllers/confirmations_controller.rb",
+        "app/controllers/passwords_controller.rb", 
+        "app/controllers/sessions_controller.rb", 
+        "app/controllers/users_controller.rb"
+      ].each do |file|
         m.file file, file
       end
       
