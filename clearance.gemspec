@@ -1,5 +1,5 @@
 Gem::Specification.new do |s|
-  s.date = "2008-11-06"
+  s.date = "2008-11-11"
   s.name = "clearance"
   s.summary = "Fork of clearance, not-purely-restful, but with Facebook goodness"
   s.email = "info@hashrocket.com"
