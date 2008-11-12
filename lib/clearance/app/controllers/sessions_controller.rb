@@ -28,8 +28,7 @@ module Clearance
                 log_user_in(@user)
                 login_successful
               else
-                mailer_model.deliver_confirmation(@user)
-                deny_access('Account not confirmed. Confirmation email sent.')
+                unconfirmed_login_attempt
               end
             end
           end
@@ -51,6 +50,11 @@ module Clearance
           def login_failure(message = "Bad email or password.")
             flash.now[:notice] = message
             render :action => :new
+          end
+          
+          def unconfirmed_login_attempt
+            mailer_model.deliver_confirmation(@user)
+            deny_access('Account not confirmed. Confirmation email sent.')
           end
       
           def remember(user)
