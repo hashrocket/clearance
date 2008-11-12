@@ -1,5 +1,5 @@
 Gem::Specification.new do |s|
-  s.date = "2008-11-11"
+  s.date = "2008-11-12"
   s.name = "clearance"
   s.summary = "Fork of clearance, not-purely-restful, but with Facebook goodness"
   s.email = "info@hashrocket.com"
@@ -41,8 +41,6 @@ Gem::Specification.new do |s|
     "generators/clearance/templates/app/views/clearance_mailer/confirmation.html.erb",
     "generators/clearance/templates/app/views/clearance_mailer/facebook_welcome.text.html.haml",
     "generators/clearance/templates/app/views/clearance_mailer/forgot_password.html.erb",
-    "generators/clearance/templates/app/views/confirmations",
-    "generators/clearance/templates/app/views/confirmations/new.html.erb",
     "generators/clearance/templates/app/views/passwords",
     "generators/clearance/templates/app/views/passwords/edit.html.erb",
     "generators/clearance/templates/app/views/passwords/new.html.erb",
@@ -120,8 +118,6 @@ Gem::Specification.new do |s|
     "test/rails_root/app/views/clearance_mailer/confirmation.html.erb",
     "test/rails_root/app/views/clearance_mailer/facebook_welcome.text.html.haml",
     "test/rails_root/app/views/clearance_mailer/forgot_password.html.erb",
-    "test/rails_root/app/views/confirmations",
-    "test/rails_root/app/views/confirmations/new.html.erb",
     "test/rails_root/app/views/layouts",
     "test/rails_root/app/views/layouts/_flashes.erb",
     "test/rails_root/app/views/layouts/application.html.erb",
@@ -563,8 +559,6 @@ Gem::Specification.new do |s|
     "test/rails_root/vendor/plugins/clearance/generators/clearance/templates/app/views/clearance_mailer/confirmation.html.erb",
     "test/rails_root/vendor/plugins/clearance/generators/clearance/templates/app/views/clearance_mailer/facebook_welcome.text.html.haml",
     "test/rails_root/vendor/plugins/clearance/generators/clearance/templates/app/views/clearance_mailer/forgot_password.html.erb",
-    "test/rails_root/vendor/plugins/clearance/generators/clearance/templates/app/views/confirmations",
-    "test/rails_root/vendor/plugins/clearance/generators/clearance/templates/app/views/confirmations/new.html.erb",
     "test/rails_root/vendor/plugins/clearance/generators/clearance/templates/app/views/passwords",
     "test/rails_root/vendor/plugins/clearance/generators/clearance/templates/app/views/passwords/edit.html.erb",
     "test/rails_root/vendor/plugins/clearance/generators/clearance/templates/app/views/passwords/new.html.erb",
