@@ -1,9 +1,9 @@
 Gem::Specification.new do |s|
-  s.date = "2008-11-12"
+  s.date = "2008-11-13"
   s.name = "clearance"
   s.summary = "Fork of clearance, not-purely-restful, but with Facebook goodness"
   s.email = "info@hashrocket.com"
-  s.version = '0.4.1'
+  s.version = '0.4.2'
   s.homepage = "http://github.com/hashrocket/clearance"
   s.description = "Fork of clearance, not-purely-restful, but with Facebook goodness"
   s.authors = [

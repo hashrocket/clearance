@@ -31,7 +31,7 @@ module Clearance
           def update
             if @user.reset_password(params)
               session[:user_id] = @user.id
-              redirect_to @user
+              redirect_to url_after_update
             else
               flash.now[:error] = 'Password not changed.'
               render :action => :edit
@@ -49,6 +49,10 @@ module Clearance
           
           def url_after_create
             new_session_url
+          end
+          
+          def url_after_update
+            user_url(@user)
           end
         end
 
