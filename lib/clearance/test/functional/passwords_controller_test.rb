@@ -12,7 +12,7 @@ module Clearance
             should_route :put, '/passwords/:id', :action => 'update', :id => 'reset_password_code'
 
             context 'with a user' do
-              setup { @user = Factory :user }
+              setup { @user = Factory :user, :confirmed => true }
 
               context 'A GET to #new' do
                 setup { get :new }

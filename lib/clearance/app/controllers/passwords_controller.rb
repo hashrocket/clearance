@@ -22,15 +22,26 @@ module Clearance
               flash.now[:error] = 'Unknown email'
               render :action => :new
             else
-              user.generate_reset_password_code
-              ClearanceMailer.deliver_forgot_password user
-              redirect_to url_after_create
+              if user.facebook_user?
+                flash.now[:error] = 'This is a Facebook account, please visit facebook.com to recover your password.'
+                render :action => :new
+              else
+                if user.confirmed?
+                  user.generate_reset_password_code
+                  ClearanceMailer.deliver_forgot_password user
+                  redirect_to url_after_create
+                else
+                  flash.now[:error] = 'Sorry, this account is not active.'
+                  render :action => :new
+                end
+              end
             end
           end
 
           def update
             if @user.reset_password(params)
               session[:user_id] = @user.id
+              flash[:success] = "Your password has been updated."
               redirect_to url_after_update
             else
               flash.now[:error] = 'Password not changed.'

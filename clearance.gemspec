@@ -3,7 +3,7 @@ Gem::Specification.new do |s|
   s.name = "clearance"
   s.summary = "Fork of clearance, not-purely-restful, but with Facebook goodness"
   s.email = "info@hashrocket.com"
-  s.version = "0.4.2"
+  s.version = "0.4.3"
   s.homepage = "http://github.com/hashrocket/clearance"
   s.description = "Fork of clearance, not-purely-restful, but with Facebook goodness"
   s.authors = [
@@ -83,6 +83,7 @@ Gem::Specification.new do |s|
     "lib/clearance/app/models/user.rb",
     "lib/clearance/spec",
     "lib/clearance/spec/controllers",
+    "lib/clearance/spec/controllers/passwords_controller_spec.rb",
     "lib/clearance/spec/controllers/sessions_controller_spec.rb",
     "lib/clearance/spec/models",
     "lib/clearance/spec/models/user_spec.rb",
@@ -211,6 +212,7 @@ Gem::Specification.new do |s|
     "test/rails_root/script/spec_server",
     "test/rails_root/spec",
     "test/rails_root/spec/controllers",
+    "test/rails_root/spec/controllers/passwords_controller_spec.rb",
     "test/rails_root/spec/controllers/session_controller_spec.rb",
     "test/rails_root/spec/models",
     "test/rails_root/spec/models/user_spec.rb",
