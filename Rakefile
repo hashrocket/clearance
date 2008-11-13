@@ -26,13 +26,14 @@ end
 desc "Run the test suite"
 task :default => ['test:all', 'test:spec']
 
+load 'lib/clearance/version.rb'
 
 gemspec_doc = <<-GEMSPEC_DOC
   s.date = "#{Date.today.strftime('%Y-%m-%d')}"
   s.name = "clearance"
   s.summary = "Fork of clearance, not-purely-restful, but with Facebook goodness"
   s.email = "info@hashrocket.com"
-  s.version = '0.4.2'
+  s.version = "#{Clearance::Version::MAJOR}.#{Clearance::Version::MINOR}.#{Clearance::Version::PATCH}"
   s.homepage = "http://github.com/hashrocket/clearance"
   s.description = "Fork of clearance, not-purely-restful, but with Facebook goodness"
   s.authors = [
