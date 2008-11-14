@@ -35,7 +35,7 @@ module Clearance
                   setup do
                     ActionMailer::Base.deliveries.clear
 
-                    post :create, :email => @user.email
+                    post :create, :user => {:email => @user.email}
                     @email = ActionMailer::Base.deliveries[0]
                   end
 
@@ -57,7 +57,7 @@ module Clearance
                     assert ! User.exists?(['email = ?', email])
                     ActionMailer::Base.deliveries.clear
 
-                    post :create, :email => email
+                    post :create, :user => {:email => email}
                   end
 
                   should 'not send a password reminder email' do

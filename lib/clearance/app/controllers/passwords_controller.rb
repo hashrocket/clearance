@@ -17,25 +17,36 @@ module Clearance
 
         module InstanceMethods
           def create
-            user = User.find_by_email params[:email]
-            if user.nil?
-              flash.now[:error] = 'Unknown email'
-              render :action => :new
-            else
-              if user.facebook_user?
-                flash.now[:error] = 'This is a Facebook account, please visit facebook.com to recover your password.'
-                render :action => :new
+            user_as_entered = User.new params[:user]
+            @user = user_as_entered
+            
+            failed_create('Enter an email address.') and return if user_as_entered.email.blank?
+            
+            found_user = User.find_by_email(user_as_entered.email)
+
+            failed_create('Unknown email') and return if found_user.nil?
+            
+            if found_user.facebook_user?
+              failed_create 'This is a Facebook account, please visit facebook.com to recover your password.'
+              return
+            end
+            
+            if found_user.confirmed?
+              custom_validation_for_create_message = custom_validation_for_create(found_user)
+              if custom_validation_for_create_message.blank?
+                found_user.generate_reset_password_code
+                ClearanceMailer.deliver_forgot_password found_user
+                flash[:success] = "We sent you an email with instructions to reset your password."
+                after_create_successful
+                return
               else
-                if user.confirmed?
-                  user.generate_reset_password_code
-                  ClearanceMailer.deliver_forgot_password user
-                  redirect_to url_after_create
-                else
-                  flash.now[:error] = 'Sorry, this account is not active.'
-                  render :action => :new
-                end
+                @user = user_as_entered
+                failed_create(custom_validation_for_create_message)
+                return
               end
             end
+            
+            failed_create('Sorry, this account is not active.')
           end
 
           def update
@@ -51,6 +62,15 @@ module Clearance
         end
 
         module PrivateInstanceMethods
+          def after_create_successful
+            redirect_to url_after_create
+          end
+          
+          # override this if you want to have additional constraints before sending password reset
+          # example:  a security question must be answered
+          def custom_validation_for_create(user)
+          end
+          
           def find_user_with_reset_password_code_or_deny
             @user = User.find_by_reset_password_code(params[:id])
             if @user.nil?
@@ -64,6 +84,11 @@ module Clearance
           
           def url_after_update
             user_url(@user)
+          end
+          
+          def failed_create(msg)
+            flash[:error] = msg
+            render :action => :new
           end
         end
 
