@@ -5,7 +5,7 @@ require 'rake/gempackagetask'
 require 'spec/rake/spectask'
 
 def gem_files
-  FileList["[A-Z]*", "{generators,lib,test}/**/*"]
+  FileList["[A-Z]*", "{generators,lib}/**/*"]
 end
 
 test_files_pattern = 'test/rails_root/test/{unit,functional,other}/**/*_test.rb'
