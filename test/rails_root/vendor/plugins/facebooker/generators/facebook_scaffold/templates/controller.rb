@@ -5,7 +5,7 @@ class <%= controller_class_name %>Controller < ApplicationController
     @<%= table_name %> = <%= class_name %>.find(:all)
 
     respond_to do |format|
-      format.html # index.html.erb
+      format.html # index.html.haml
       format.fbml # index.fbml.erb
       format.xml  { render :xml => @<%= table_name %> }
     end
@@ -17,7 +17,7 @@ class <%= controller_class_name %>Controller < ApplicationController
     @<%= file_name %> = <%= class_name %>.find(params[:id])
 
     respond_to do |format|
-      format.html # show.html.erb
+      format.html # show.html.haml
       format.fbml # show.fbml.erb
       format.xml  { render :xml => @<%= file_name %> }
     end
@@ -29,7 +29,7 @@ class <%= controller_class_name %>Controller < ApplicationController
     @<%= file_name %> = <%= class_name %>.new
 
     respond_to do |format|
-      format.html # new.html.erb
+      format.html # new.html.haml
       format.fbml # new.fbml.erb
       format.xml  { render :xml => @<%= file_name %> }
     end

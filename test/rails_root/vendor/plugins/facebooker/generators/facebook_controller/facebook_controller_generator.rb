@@ -28,8 +28,8 @@ class FacebookControllerGenerator < Rails::Generator::NamedBase
 
       # View template for each action.
       actions.each do |action|
-        html_path = File.join('app/views', class_path, file_name, "#{action}.html.erb")
-        m.template 'view.html.erb', html_path,
+        html_path = File.join('app/views', class_path, file_name, "#{action}.html.haml")
+        m.template 'view.html.haml', html_path,
           :assigns => { :action => action, :path => html_path }
         fbml_path = File.join('app/views', class_path, file_name, "#{action}.fbml.erb")
         m.template 'view.fbml.erb', fbml_path,

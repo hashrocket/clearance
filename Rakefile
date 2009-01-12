@@ -46,7 +46,8 @@ gemspec_doc = <<-GEMSPEC_DOC
     "Hashrocket, Inc.",
     "Les Hill",
     "Jon Larkowski",
-    "Wes Gibbs"
+    "Wes Gibbs", 
+    "Durran Jordan"
   ]
 GEMSPEC_DOC
 

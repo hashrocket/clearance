@@ -62,8 +62,8 @@ class FacebookScaffoldGenerator < Rails::Generator::NamedBase
 
       for action in scaffold_views
         m.template(
-          "view_#{action}.html.erb",
-          File.join('app/views', controller_class_path, controller_file_name, "#{action}.html.erb")
+          "view_#{action}.html.haml",
+          File.join('app/views', controller_class_path, controller_file_name, "#{action}.html.haml")
         )
         m.template(
           "view_#{action}.fbml.erb",
@@ -72,7 +72,7 @@ class FacebookScaffoldGenerator < Rails::Generator::NamedBase
       end
 
       # Layout and stylesheet.
-      m.template('layout.html.erb', File.join('app/views/layouts', controller_class_path, "#{controller_file_name}.html.erb"))
+      m.template('layout.html.haml', File.join('app/views/layouts', controller_class_path, "#{controller_file_name}.html.haml"))
       m.template('layout.fbml.erb', File.join('app/views/layouts', controller_class_path, "#{controller_file_name}.fbml.erb"))
       m.template('style.css', 'public/stylesheets/scaffold.css')
       m.template('facebook_style.css', 'public/stylesheets/facebook_scaffold.css')

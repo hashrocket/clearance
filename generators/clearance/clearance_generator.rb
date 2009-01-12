@@ -20,30 +20,30 @@ class ClearanceGenerator < Rails::Generator::Base
       end
       
       m.directory File.join("app", "views", "passwords")
-      ["app/views/passwords/new.html.erb",
-       "app/views/passwords/edit.html.erb"].each do |file|
+      ["app/views/passwords/new.html.haml",
+       "app/views/passwords/edit.html.haml"].each do |file|
         m.file file, file
       end
       
       m.directory File.join("app", "views", "sessions")
-      ["app/views/sessions/new.html.erb"].each do |file|
+      ["app/views/sessions/new.html.haml"].each do |file|
         m.file file, file
       end
       
       m.directory File.join("app", "views", "clearance_mailer")
       [
-        "app/views/clearance_mailer/confirmation.html.erb",
+        "app/views/clearance_mailer/confirmation.html.haml",
         "app/views/clearance_mailer/facebook_welcome.text.html.haml",
-        "app/views/clearance_mailer/forgot_password.html.erb"
+        "app/views/clearance_mailer/forgot_password.html.haml"
       ].each do |file|
         m.file file, file
       end
       
       m.directory File.join("app", "views", "users")
-      ["app/views/users/_form.html.erb",
-       "app/views/users/new.html.erb",
-       "app/views/users/_password_form.html.erb",
-       "app/views/users/edit_password.html.erb"].each do |file|
+      ["app/views/users/_form.html.haml",
+       "app/views/users/new.html.haml",
+       "app/views/users/_password_form.html.haml",
+       "app/views/users/edit_password.html.haml"].each do |file|
         m.file file, file
       end
       
